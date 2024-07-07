@@ -77,7 +77,7 @@ def main():
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
         st.image(image, caption='Uploaded Image.', use_column_width=True)
-        model = tf.keras.models.load_model('D:/FYP_try/18-fyp2-20class/fyp2-18-adam-30-mobilenet.h5')  # Load your trained model
+        model = tf.keras.models.load_model('D:/FYP-Streamlit/fyp2-18-adam-30-mobilenet.h5')  # Load your trained model
         predicted_class, nutrient_info = classify_and_get_nutrients(uploaded_file, model)
 
         st.write('Prediction:')
