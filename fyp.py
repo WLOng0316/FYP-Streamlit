@@ -71,7 +71,7 @@ def classify_and_get_nutrients(image_path, model):
 # Streamlit app
 def main():
     st.title('Malaysia Food Image Recognition')
-    st.write('Upload a food image for classification and the nutrition information will be display.')
+    st.write('Upload a food image, the name of the food and nutrition information will be display.')
 
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "png"])
     if uploaded_file is not None:
