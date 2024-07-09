@@ -29,7 +29,7 @@ def get_nutrient_info(food_item):
         necessary_info = {
             "Food Name": food_data.get("food_name", "N/A"),
             "Serving Quantity": food_data.get("serving_qty", 0),
-            "Serving Unit":
+            "Serving Unit": food_data.get("serving_unit", "N/A"),
             "Serving Unit": food_data.get("serving_unit", "N/A"),
             "Serving Weight (grams)": food_data.get("serving_weight_grams", 0),
             "Calories": food_data.get("nf_calories", 0),
