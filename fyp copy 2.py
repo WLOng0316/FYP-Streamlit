@@ -6,6 +6,7 @@ from tensorflow.keras.preprocessing import image as keras_image
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 import requests
 import json
+import cv2
 from ultralytics import YOLO
 
 # Define target classes for counting
@@ -29,7 +30,6 @@ def get_nutrient_info(food_item):
         necessary_info = {
             "Food Name": food_data.get("food_name", "N/A"),
             "Serving Quantity": food_data.get("serving_qty", 0),
-            "Serving Unit":
             "Serving Unit": food_data.get("serving_unit", "N/A"),
             "Serving Weight (grams)": food_data.get("serving_weight_grams", 0),
             "Calories": food_data.get("nf_calories", 0),
@@ -48,6 +48,7 @@ def get_nutrient_info(food_item):
     else:
         return {'Error': 'No food data found'}
 
+# Function to load and preprocess the image
 # Function to load and preprocess the image from a PIL Image
 def preprocess_image(pil_image):
     img = pil_image.resize((224, 224))  # Resize the image to the target size
@@ -55,6 +56,7 @@ def preprocess_image(pil_image):
     img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
     img_array = preprocess_input(img_array)  # Preprocess the input
     return img_array
+
 
 # Function to classify the image and get nutrients
 def classify_and_count(pil_image, model, yolo_model):
@@ -69,9 +71,11 @@ def classify_and_count(pil_image, model, yolo_model):
     predicted_class = class_labels[predicted_index]
     confidence_score = np.max(predictions)
 
+    # Convert PIL Image to OpenCV format
+    open_cv_image = np.array(pil_image.convert('RGB'))
+    img_cv = cv2.cvtColor(open_cv_image, cv2.COLOR_RGB2BGR)
+
     if predicted_class in target_classes:
-        # Convert PIL Image to format expected by YOLO model
-        img_cv = np.array(pil_image.convert('RGB'))
         # Perform detection with YOLO
         results = yolo_model(img_cv)[0]
         count = sum(1 for result in results.boxes.data.tolist() if results.names[int(result[5])].upper() == predicted_class.upper())
@@ -81,6 +85,7 @@ def classify_and_count(pil_image, model, yolo_model):
 
     nutrient_info = get_nutrient_info(food_item)
     return predicted_class, confidence_score, nutrient_info, count if predicted_class in target_classes else None
+
 
 # Load YOLO model
 yolo_model_path = 'best.pt'  # Update this path to where your YOLO weights are stored
@@ -100,7 +105,7 @@ def main():
         image = Image.open(uploaded_file)
         st.image(image, caption='Uploaded Image.', use_column_width=True)
 
-        # Process image
+        # Load models
         predicted_class, confidence_score, nutrient_info, count = classify_and_count(image, model, yolo_model)
 
         # Show results
