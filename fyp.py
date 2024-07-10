@@ -9,7 +9,7 @@ import json
 from ultralytics import YOLO
 
 # Define target classes for counting
-target_classes = ['apple', 'beef_rendang', 'kuih_lapis', 'milk', 'guava']
+target_classes = ['apple', 'beef_rendang', 'kuih_lapis', 'milk', 'nasi_lemak']
 
 # Function to get nutrient information for a given food item from Nutritionix API
 def get_nutrient_info(food_item):
